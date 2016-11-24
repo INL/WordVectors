@@ -1,10 +1,10 @@
 package word2vec;
 import java.io.IOException;
-import java.io.Writer;
+
 import java.util.*;
 
-import org.ivdnt.util.StringUtils;
-import org.ivdnt.util.TabSeparatedFile;
+import org.ivdnt.util.*;
+
 
 public class WordInContext 
 {
@@ -50,6 +50,7 @@ public class WordInContext
 		TabSeparatedFile ts = new TabSeparatedFile(fileName, fields);
 
 		List<String> sentences = ts.getColumn("sentence");
+		@SuppressWarnings("unused")
 		String word = ts.getColumn("word").get(0);
 
 		List<WordInContext> sentenceList = new ArrayList<WordInContext>();

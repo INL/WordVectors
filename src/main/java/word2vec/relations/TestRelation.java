@@ -101,7 +101,7 @@ public class TestRelation
 		int k=0;
 		int matchAt = -1;
 		
-		boolean selfMatch = false;
+		// boolean selfMatch = false;
 		
 		String neighbours = "";
 		

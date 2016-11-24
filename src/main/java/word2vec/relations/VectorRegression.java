@@ -49,6 +49,7 @@ public class VectorRegression
 		return lasso;
 	}
 
+	@SuppressWarnings("unused")
 	private static void test()
 	{
 		double[][] data = 
@@ -167,7 +168,7 @@ public class VectorRegression
 					int k=0;
 					int matchAt = -1;
 
-					boolean selfMatch = false;
+					//boolean selfMatch = false;
 
 					String neighbours = "";
 
@@ -194,7 +195,7 @@ public class VectorRegression
 
 	public Matrix getLinearMappingBetweenSpaces(Vectors v1, Vectors v2)
 	{
-		long s = System.currentTimeMillis();
+		//long s = System.currentTimeMillis();
 		List<String> words = new ArrayList<String>();
 		List<float[]> vectors1 = new ArrayList<float[]>();
 		List<float[]> vectors2 = new ArrayList<float[]>();
@@ -225,7 +226,7 @@ public class VectorRegression
 
 		Matrix r = fitLinearMapping(vectors1, vectors2);
 
-		long f = System.currentTimeMillis();
+		// long f = System.currentTimeMillis();
 
 		// nl.openconvert.log.ConverterLog.defaultLog.println("Computed linear mapping in " +(f-s) + " milliseconds ");
 		return r;
@@ -265,7 +266,7 @@ public class VectorRegression
 		Matrix X = B.mtimes(A.transpose());
 		Matrix[] USV = SingularValueDecomposition.decompose(X);
 		Matrix U = USV[0];
-		Matrix S = USV[1];
+		//Matrix S = USV[1];
 		Matrix V = USV[2];
 		return U.mtimes(V.transpose());
 	}
@@ -314,8 +315,10 @@ public class VectorRegression
 		{
 			Matrix[] USV = SingularValueDecomposition.decompose(MP.minus(I_A), true);
 
+			@SuppressWarnings("unused")
 			Matrix U = USV[0];
 			Matrix S = USV[1];
+			@SuppressWarnings("unused")
 			Matrix V = USV[2];
 
 			//Printer.print(V);
@@ -326,8 +329,8 @@ public class VectorRegression
 				S.setEntry(i, i, 0);
 			}
 
-			Matrix r1 = U.mtimes(S.mtimes(V.transpose())).plus(I_A);
-			//Matrix r = r1.mtimes(Q1T);
+			// Matrix r1 = U.mtimes(S.mtimes(V.transpose())).plus(I_A);
+			// // Matrix r = r1.mtimes(Q1T);
 		}
 		
 		return MP.plus(Q2); // waarom maakt dit niks uit 

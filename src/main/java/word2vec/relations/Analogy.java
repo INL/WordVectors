@@ -31,7 +31,7 @@ public class Analogy
 			float[] C = vectors.getVector(c);
 			float[] D = guess(A,B,C);
 			
-			String[] known = {a,b,c};
+			//String[] known = {a,b,c};
 			Set<String> knownSet = new HashSet<String>();
 			knownSet.add(a); knownSet.add(b); knownSet.add(c);
 
@@ -40,7 +40,7 @@ public class Analogy
 			int k=0;
 			int matchAt = -1;
 			
-			boolean selfMatch = false;
+			//boolean selfMatch = false;
 			
 			String neighbours = "";
 			

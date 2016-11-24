@@ -16,14 +16,11 @@
 package word2vec;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
 
 
 
@@ -50,7 +47,8 @@ public class ConvertVectors {
 		FileOutputStream fos = new FileOutputStream(outputFile);
 		v.writeTo(fos);
 	}
-
+    @SuppressWarnings("unused")
+	@Deprecated 
 	private static float[] readFloatsOrig(int size, BufferedInputStream fis) throws IOException 
 	{
 		float[] m = new float[size];

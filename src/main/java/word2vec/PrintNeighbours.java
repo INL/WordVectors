@@ -5,7 +5,7 @@ import java.util.*;
 
 import word2vec.Distance.ScoredTerm;
 
-import java.io.*;
+
 public class PrintNeighbours
 {
 	Vectors vectors;

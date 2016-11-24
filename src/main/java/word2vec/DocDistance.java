@@ -1,7 +1,6 @@
 package word2vec;
 
 import java.io.BufferedReader;
-import java.util.*;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class DocDistance
 					for (ScoredTerm t: l)
 					{
 						String w = t.getTerm();
-						System.out.println(t.getTerm() + "\t" + t.getScore());
+						System.out.println(w + "\t" + t.getScore());
 					}
 				} catch (Exception e)
 				{

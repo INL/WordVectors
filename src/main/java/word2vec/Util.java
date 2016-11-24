@@ -2,7 +2,6 @@ package word2vec;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -34,19 +33,11 @@ public class Util
 
 			byte[] swap = new byte[4];
 
-			if (false)
-			{
-				swap[1] = bytes[1];
-				swap[2] = bytes[0];
-				swap[0] = bytes[2];
-				swap[3] = bytes[3];
-			} else 
-			{
 				swap[0] = bytes[3];
 				swap[1] = bytes[2];
 				swap[2] = bytes[1];
 				swap[3] = bytes[0];
-			}
+			
 
 
 			fw.write(swap);
@@ -59,19 +50,9 @@ public class Util
 		try
 		{
 			byte[] buffer = new byte[4 * size];
-			int r = fis.read(buffer);
+			fis.read(buffer);
 
-			if (false)
-			{
-				System.err.println("finished reading bytes: " + r);
-
-				String s = "";
-				for (int i=0; i < r; i++)
-				{
-					s += String.format("[%x]", buffer[i]);
-				}
-				System.err.println(s);
-			}
+			
 
 			if (fromLittleEndian)
 			{
@@ -81,16 +62,7 @@ public class Util
 				{
 					int d = 4*j;
 
-					if (false)
-					{
-						swap[0] = buffer[d];
-						swap[2] = buffer[d+2];
-
-
-						buffer[d+2] = swap[0];	
-						buffer[d] = swap[2];
-					} else
-					{
+					
 						swap[0] = buffer[d+3];
 						swap[1] = buffer[d+2];
 						swap[2] = buffer[d+1];
@@ -100,7 +72,7 @@ public class Util
 						buffer[d+1] = swap[1];
 						buffer[d+2] = swap[2];
 						buffer[d+3] = swap[3];
-					}
+					
 				}
 			}
 
@@ -111,10 +83,7 @@ public class Util
 
 			buf_in.rewind();
 			buf_in.asFloatBuffer().get(readback);
-			if (false) for (int i=0; i < readback.length; i++)
-			{
-				System.err.println(i + ":" + readback[i]);
-			}
+		
 
 		} catch (IOException ex) 
 		{
@@ -182,7 +151,7 @@ public class Util
 		length = 0;
 		for (int i = 0; i < size; i++)
 			length += vec[i] * vec[i];
-		double length2 = length;
+		//double length2 = length;
 		if (length == 0)
 			return;
 		length = (float) Math.sqrt(length);
@@ -257,7 +226,7 @@ public class Util
 
 		for (int i=0; i < vec.length; i++)
 		{
-			boolean neg = false;
+			// boolean neg = false;
 			
 			vec[i] = (float)  Math.pow((double) vec[i], 1/ (double) found);
 			vec[i] = vec[i] - 1;
@@ -289,7 +258,7 @@ public class Util
 		int size = vectors.vectorSize();
 		float[] vec = new float[size];
 		Arrays.fill(vec, 0.0f);
-		int tokenCount = tokens.size();
+		// int tokenCount = tokens.size();
 		float[][]allVec = vectors.getVectors();
 
 		for (String token: tokens) 
@@ -358,8 +327,8 @@ public class Util
 		int T = tokenCount;
 		//T = 10;
 		float[][]allVec = vectors.getVectors();
-		String lemma = wic.lemma.replaceAll(":.*", "").toLowerCase();
-		float[] vLem = null;
+		//String lemma = wic.lemma.replaceAll(":.*", "").toLowerCase();
+		//float[] vLem = null;
 		
 		/**
 		try
@@ -408,7 +377,7 @@ public class Util
 		int size = vectors.vectorSize();
 		float[] vec = new float[size];
 		Arrays.fill(vec, 0.0f);
-		int tokenCount = tokens.size();
+		// int tokenCount = tokens.size();
 		float[][]allVec = vectors.getVectors();
 
 		for (String token: tokens) 

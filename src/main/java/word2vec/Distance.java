@@ -123,7 +123,7 @@ public class Distance
 		float[][]allVec = vectors.getVectors();
 		double similarity = 0;
 
-		int size = vectors.vectorSize();
+		// int size = vectors.vectorSize();
 
 		float[] bestSimilarity = new float[wordsToReturn];
 
@@ -195,6 +195,7 @@ public class Distance
 				}
 				System.out.println();
 			}
+			in.close();
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block
@@ -210,19 +211,19 @@ public class Distance
 	public static List<ScoredTerm> measure(Vectors vectors, int wordsToReturn, String[] tokens, Predicate<String> predicate) throws OutOfVocabularyException 
 	{
 		float distance;
-		float length;
+		//float length;
 		float[] bestDistance = new float[wordsToReturn];
 		String[] bestWords = new String[wordsToReturn];
 		int d;
 		int size = vectors.vectorSize();
 		float[] vec = new float[size]; // average vector of input tokens
 		float[][]allVec = vectors.getVectors();
-		long startTime = System.currentTimeMillis();
+		//long startTime = System.currentTimeMillis();
 		// nl.openconvert.log.ConverterLog.defaultLog.println("1:" + startTime);
 		Set<Integer> wordIdx = new TreeSet<Integer>();
 
 		int tokenCount = tokens.length;
-		boolean outOfDict = false;
+		// boolean outOfDict = false;
 		String outOfDictWord = null;
 		Arrays.fill(vec, 0.0f);
 		wordIdx.clear();
@@ -234,7 +235,7 @@ public class Distance
 			if (idx == null) 
 			{
 				outOfDictWord = tokens[i];
-				outOfDict = true;
+				// outOfDict = true;
 				continue;
 			} else
 			{

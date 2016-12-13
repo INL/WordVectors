@@ -19,7 +19,7 @@
     <artifactId>laml</artifactId>
     <version>1.5</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/lib/LAML-1.5.jar</systemPath>
+    <systemPath>/home/does/workspace/WordVectors/lib/LAML-1.5.jar</systemPath>
 </dependency>
    </dependencies>
 </project>

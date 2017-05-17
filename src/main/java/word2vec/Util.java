@@ -319,12 +319,26 @@ public class Util
 	
 	public static float[] getRankAndDistanceWeightedAverageVector(Vectors vectors, WordInContext wic)
 	{
+		List<String> tokens = wic.sentence;
+		int focusPosition = wic.focusPosition;
+		
+		float[] vec = getRankedAndDistanceWeightedAverageVector(vectors, tokens, focusPosition);
+
+		return vec;
+	}
+
+	private static float[] getRankedAndDistanceWeightedAverageVector(Vectors vectors, List<String> tokens,
+			int focusPosition) 
+	{
 		int size = vectors.vectorSize();
 		float[] vec = new float[size];
 		Arrays.fill(vec, 0.0f);
-		List<String> tokens = wic.sentence;
+		
+		
+		
 		int tokenCount = tokens.size();
 		int T = tokenCount;
+		
 		//T = 10;
 		float[][]allVec = vectors.getVectors();
 		//String lemma = wic.lemma.replaceAll(":.*", "").toLowerCase();
@@ -355,7 +369,7 @@ public class Util
 			//if (vLem != null) relevanceWeight = Distance.cosineSimilarity(vLem, vect1); // dit werkt dus totaal NIET...
 			
 			double rankWeight = Math.log(1+idx);
-			double distanceWeight = (1 / (double) T) * Math.max(0, T - Math.abs(i-wic.focusPosition));
+			double distanceWeight = (1 / (double) T) * Math.max(0, T - Math.abs(i-focusPosition));
 			//System.err.println(tokenCount + ": " + i +  " f=" + wic.focusPosition + " dw=" + distanceWeight);
 			
 			
@@ -366,7 +380,6 @@ public class Util
 
 		normalize(vec);
 		Distance.checkNAN(vec);
-
 		return vec;
 	}
 	

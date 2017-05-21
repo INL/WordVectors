@@ -322,13 +322,13 @@ public class Util
 		List<String> tokens = wic.sentence;
 		int focusPosition = wic.focusPosition;
 		
-		float[] vec = getRankedAndDistanceWeightedAverageVector(vectors, tokens, focusPosition);
+		float[] vec = getRankedAndDistanceWeightedAverageVector(vectors, tokens, focusPosition, 0, tokens.size());
 
 		return vec;
 	}
 
 	private static float[] getRankedAndDistanceWeightedAverageVector(Vectors vectors, List<String> tokens,
-			int focusPosition) 
+			int focusPosition, int from, int to) 
 	{
 		int size = vectors.vectorSize();
 		float[] vec = new float[size];
@@ -355,7 +355,7 @@ public class Util
 		}
 		*/
 		
-		for (int i = 0; i < tokenCount; i++) 
+		for (int i = from; i < to; i++) 
 		{
 			Integer idx = vectors.getIndexOrNull(tokens.get(i));
 

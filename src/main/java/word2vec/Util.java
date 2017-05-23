@@ -327,7 +327,7 @@ public class Util
 		return vec;
 	}
 
-	private static float[] getRankedAndDistanceWeightedAverageVector(Vectors vectors, List<String> tokens,
+	public static float[] getRankedAndDistanceWeightedAverageVector(Vectors vectors, List<String> tokens,
 			int focusPosition, int from, int to) 
 	{
 		int size = vectors.vectorSize();

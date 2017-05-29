@@ -357,6 +357,8 @@ public class Util
 		
 		for (int i = from; i < to; i++) 
 		{
+			if (i == focusPosition)
+				continue;
 			Integer idx = vectors.getIndexOrNull(tokens.get(i));
 
 			if (idx == null) 

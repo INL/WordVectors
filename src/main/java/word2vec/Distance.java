@@ -328,7 +328,7 @@ public class Distance
 		aMagnitude = Math.sqrt(aMagnitude);
 		bMagnitude = Math.sqrt(bMagnitude);
 		return (aMagnitude == 0 || bMagnitude == 0)
-				? 0: dotProduct / (aMagnitude * bMagnitude);
+				? 0: Math.abs(dotProduct / (aMagnitude * bMagnitude));
 	}
 
 	public static double angle(float[] a, float[] b)

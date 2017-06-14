@@ -104,6 +104,12 @@ public class WordInContext
 
 	public static List<WordInContext> makeContexts(List<String> sentences)
 	{
+		return makeContexts(sentences,null);
+	}
+	
+	public static List<WordInContext> makeContexts(List<String> sentences, List<String> labels)
+	{
+		boolean hasLabels = labels != null;
 		List<WordInContext> sentenceList = new ArrayList<WordInContext>();
 		for (int i=0; i < sentences.size(); i++)
 		{
@@ -131,6 +137,7 @@ public class WordInContext
 			}
 			//System.err.println("Words:" + words);
 			WordInContext wic = new WordInContext(words, focusPosition);
+			if (hasLabels) wic.trueSenseId = labels.get(i); else wic.trueSenseId = "UNKNOWN";
 			sentenceList.add(wic);
 		}
 		return sentenceList;

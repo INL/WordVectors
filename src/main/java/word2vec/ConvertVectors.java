@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Radialpoint SafeCare Inc. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,6 @@
 package word2vec;
 
 import java.io.BufferedInputStream;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,7 +26,7 @@ import java.nio.ByteBuffer;
 /**
  * This program takes vectors are produced by the C program word2vec and transforms them into a Java binary file to be
  * read by the Vectors class
- * 
+ *
  * (Slightly optimized by me, notably by simply using a BufferedInputStream)
  * Also (probably) reading the word2vec file is  faster than reading the java serialized object?
  */
@@ -36,25 +35,23 @@ public class ConvertVectors {
 	/**
 	 * @param args
 	 *            the input C vectors file, output Java vectors file
+	 * @throws IOException
 	 */
-
-
-	public static void main(String[] args) throws VectorsException, IOException 
+	public static void main(String[] args) throws IOException
 	{
-		//File outputFile = new File(vectorFile);
 		Vectors v = Vectors.readFromFile(args[0]);
 		File outputFile = new File(args[1]);
 		FileOutputStream fos = new FileOutputStream(outputFile);
 		v.writeTo(fos);
 	}
     @SuppressWarnings("unused")
-	@Deprecated 
-	private static float[] readFloatsOrig(int size, BufferedInputStream fis) throws IOException 
+	@Deprecated
+	private static float[] readFloatsOrig(int size, BufferedInputStream fis) throws IOException
 	{
 		float[] m = new float[size];
 		byte[] orig = new byte[4];
 		byte[] buf = new byte[4];
-		for (int i = 0; i < size; i++) 
+		for (int i = 0; i < size; i++)
 		{
 			// read a little endian floating point number and interpret it as a big endian one, see
 			// http://stackoverflow.com/questions/2782725/converting-float-values-from-big-endian-to-little-endian/2782742#2782742

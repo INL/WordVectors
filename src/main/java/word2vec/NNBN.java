@@ -64,7 +64,7 @@ public class NNBN
 	{
 		Map<String, Integer> v = vectors.getVocabulary();
 		String[] suffixes = {"_nn", "_bn"};
-		List<Item> items = new ArrayList<Item>();
+		List<Item> items = new ArrayList<>();
 		for (String s: v.keySet())
 		{
 			for (int i=0; i < 1; i++ )

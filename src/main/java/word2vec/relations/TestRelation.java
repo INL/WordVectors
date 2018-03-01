@@ -1,16 +1,17 @@
 package word2vec.relations;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.ivdnt.util.TabSeparatedFile;
 
 //import diamant.mds.WordInContext;
 import la.matrix.Matrix;
-import org.ivdnt.util.TabSeparatedFile;
 import word2vec.Distance;
-import word2vec.Vectors;
 import word2vec.Distance.ScoredTerm;
+import word2vec.Vectors;
 
-public class TestRelation 
+public class TestRelation
 {
 	static String[] fields = {"w1", "relation", "w2"};
 	Vectors vectors;
@@ -23,16 +24,17 @@ public class TestRelation
 		float[] v1;
 		float[] v2;
 		boolean ok = true;
-		
+
+		@Override
 		public String toString()
 		{
 			return relation + "(" + w1 + "," + w2 + ")";
 		}
 	}
 
-	List<Instance> instances = new ArrayList<Instance>();
+	List<Instance> instances = new ArrayList<>();
 
-	public  void readInstances(String fileName) throws IOException
+	public  void readInstances(String fileName)
 	{
 		TabSeparatedFile ts = new TabSeparatedFile(fileName, fields);
 		String[] aap;
@@ -62,18 +64,18 @@ public class TestRelation
 				i.ok = false;
 			}
 		}
-		
+
 		for (Instance i: instances)
 		{
 			leaveOneOut(i);
 		}
 	}
-	
+
 	public void leaveOneOut(Instance h)
 	{
-		List<float[]> l1 = new ArrayList<float[]>();
-		List<float[]> l2 = new ArrayList<float[]>();
-		
+		List<float[]> l1 = new ArrayList<>();
+		List<float[]> l2 = new ArrayList<>();
+
 		for (Instance i: instances)
 		{
 			if (h != i)
@@ -82,40 +84,38 @@ public class TestRelation
 				l2.add(i.v2);
 			}
 		}
-		
+
 		Matrix m = VectorRegression.fitLinearMapping(l1, l2, Math.max(l1.size()-1,1));
-		
+
 		// dit gaat dus niet zo goed bij weinig (minder dan dim V) data, terwijl de simpele translatie wel werkt.
 		// simpelweg te veel vrijheden.
 		// oplossing: pca, en dan...
-		
+
 		Matrix mT = m.transpose();
-		
+
 		float[] y1 = VectorRegression.apply(mT, h.v1);
-		
+
 		double d = Distance.cosineSimilarity(y1,h.v2);
-		
+
 		System.out.print(h + " target_distance:"  + d + "  ");
 		List<ScoredTerm> close = Distance.getClosestTerms(vectors, 50, y1);
-		
+
 		int k=0;
 		int matchAt = -1;
-		
-		// boolean selfMatch = false;
-		
-		String neighbours = "";
-		
+
+		StringBuilder neighbours = new StringBuilder();
+
 		for (ScoredTerm st: close)
 		{
 			if (st.getTerm().equals(h.w2))
 			{
 				matchAt = k;
 			}
-			neighbours += st.getTerm() + "/" + st.getScore() + " ";
+			neighbours.append(st.getTerm()).append("/").append(st.getScore()).append(" ");
 			k++;
 		}
-		
-		System.out.println( "   selfMatch: " + matchAt + " " + neighbours);
+
+		System.out.println( "   selfMatch: " + matchAt + " " + neighbours.toString());
 	}
 
 	public static void main(String[] args) throws Exception

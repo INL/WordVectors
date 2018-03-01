@@ -20,7 +20,7 @@ public class PrintNeighbours
 	public void printNeighbours(String[] words)
 	{
 
-		Set<String> selected = new HashSet<String>();
+		Set<String> selected = new HashSet<>();
 		for (String w: words)
 		{		
 			selected.add(w);

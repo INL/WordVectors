@@ -17,10 +17,10 @@ import java.util.Map;
 
 //import diamant.mds.WordInContext;
 
-public class Util 
+public class Util
 {
 
-	public static void writeFloats(FileOutputStream fw, float[] v) throws IOException 
+	public static void writeFloats(FileOutputStream fw, float[] v) throws IOException
 	{
 		for (float f: v)
 		{
@@ -37,14 +37,14 @@ public class Util
 				swap[1] = bytes[2];
 				swap[2] = bytes[1];
 				swap[3] = bytes[0];
-			
+
 
 
 			fw.write(swap);
 		}
 	}
 
-	public static float[] readFloats(int size, BufferedInputStream fis, boolean fromLittleEndian) throws IOException 
+	public static float[] readFloats(int size, BufferedInputStream fis, boolean fromLittleEndian)
 	{
 		float[] readback=new float[size];
 		try
@@ -52,7 +52,7 @@ public class Util
 			byte[] buffer = new byte[4 * size];
 			fis.read(buffer);
 
-			
+
 
 			if (fromLittleEndian)
 			{
@@ -62,7 +62,7 @@ public class Util
 				{
 					int d = 4*j;
 
-					
+
 						swap[0] = buffer[d+3];
 						swap[1] = buffer[d+2];
 						swap[2] = buffer[d+1];
@@ -72,7 +72,7 @@ public class Util
 						buffer[d+1] = swap[1];
 						buffer[d+2] = swap[2];
 						buffer[d+3] = swap[3];
-					
+
 				}
 			}
 
@@ -83,9 +83,9 @@ public class Util
 
 			buf_in.rewind();
 			buf_in.asFloatBuffer().get(readback);
-		
 
-		} catch (IOException ex) 
+
+		} catch (IOException ex)
 		{
 			System.err.println(ex.getMessage());
 		}
@@ -123,7 +123,7 @@ public class Util
 		for (int i=0; i < dim; i++)
 			f[i] = i;
 		normalize(f);
-		Map<String, float[]> senseMap = new HashMap<String, float[]>();
+		Map<String, float[]> senseMap = new HashMap<>();
 
 		senseMap.put("aap",f);
 		senseMap.put("noot",f);
@@ -175,12 +175,12 @@ public class Util
 		int tokenCount = tokens.length;
 		float[][]allVec = vectors.getVectors();
 
-		for (int i = 0; i < tokenCount; i++) 
+		for (int i = 0; i < tokenCount; i++)
 		{
 			Integer idx = vectors.getIndexOrNull(tokens[i]);
 
-			if (idx == null) 
-			{	
+			if (idx == null)
+			{
 				continue;
 			}
 
@@ -203,17 +203,17 @@ public class Util
 		float[] vec = new float[size];
 		for (int i=0; i < vec.length; i++)
 			vec[i] = 1;
-		
+
 		int tokenCount = tokens.length;
 		float[][]allVec = vectors.getVectors();
 
 		int found=0;
-		for (int i = 0; i < tokenCount; i++) 
+		for (int i = 0; i < tokenCount; i++)
 		{
 			Integer idx = vectors.getIndexOrNull(tokens[i]);
 
-			if (idx == null) 
-			{	
+			if (idx == null)
+			{
 				continue;
 			}
 
@@ -227,8 +227,8 @@ public class Util
 		for (int i=0; i < vec.length; i++)
 		{
 			// boolean neg = false;
-			
-			vec[i] = (float)  Math.pow((double) vec[i], 1/ (double) found);
+
+			vec[i] = (float)  Math.pow(vec[i], 1/ (double) found);
 			vec[i] = vec[i] - 1;
 			// System.err.println(i + " "  + vec[i]);
 		}
@@ -238,10 +238,10 @@ public class Util
 		System.err.println("Product of"  + Arrays.asList(tokens) +  " :  " + toList(vec));
 		return vec;
 	}
-	
+
 	static List<Float> toList(float[] a)
 	{
-		List<Float> r = new ArrayList<Float>();
+		List<Float> r = new ArrayList<>();
 		for (float x: a)
 		{
 			r.add(x);
@@ -252,7 +252,7 @@ public class Util
 	{
 		return getAverageVector(vectors, tokens, 0);
 	}
-	
+
 	public static float[] getAverageVector(Vectors vectors, Collection<String> tokens, float alpha)
 	{
 		int size = vectors.vectorSize();
@@ -261,12 +261,12 @@ public class Util
 		// int tokenCount = tokens.size();
 		float[][]allVec = vectors.getVectors();
 
-		for (String token: tokens) 
+		for (String token: tokens)
 		{
 			Integer idx = vectors.getIndexOrNull(token);
 
-			if (idx == null) 
-			{	
+			if (idx == null)
+			{
 				continue;
 			}
 
@@ -285,7 +285,7 @@ public class Util
 /*
  * Weight the average vector by rank in the word2vec file (which should be sorted on descending frequency)
  */
-	
+
 	public static float[] getRankWeightedAverageVector(Vectors vectors, String[] tokens)
 	{
 		int size = vectors.vectorSize();
@@ -294,12 +294,12 @@ public class Util
 		int tokenCount = tokens.length;
 		float[][]allVec = vectors.getVectors();
 
-		for (int i = 0; i < tokenCount; i++) 
+		for (int i = 0; i < tokenCount; i++)
 		{
 			Integer idx = vectors.getIndexOrNull(tokens[i]);
 
-			if (idx == null) 
-			{	
+			if (idx == null)
+			{
 				continue;
 			}
 
@@ -316,34 +316,34 @@ public class Util
 
 		return vec;
 	}
-	
+
 	public static float[] getRankAndDistanceWeightedAverageVector(Vectors vectors, WordInContext wic)
 	{
 		List<String> tokens = wic.sentence;
 		int focusPosition = wic.focusPosition;
-		
+
 		float[] vec = getRankedAndDistanceWeightedAverageVector(vectors, tokens, focusPosition, 0, tokens.size());
 
 		return vec;
 	}
 
 	public static float[] getRankedAndDistanceWeightedAverageVector(Vectors vectors, List<String> tokens,
-			int focusPosition, int from, int to) 
+			int focusPosition, int from, int to)
 	{
 		int size = vectors.vectorSize();
 		float[] vec = new float[size];
 		Arrays.fill(vec, 0.0f);
-		
-		
-		
+
+
+
 		int tokenCount = tokens.size();
 		int T = tokenCount;
-		
+
 		//T = 10;
 		float[][]allVec = vectors.getVectors();
 		//String lemma = wic.lemma.replaceAll(":.*", "").toLowerCase();
 		//float[] vLem = null;
-		
+
 		/**
 		try
 		{
@@ -354,27 +354,27 @@ public class Util
 			//e.printStackTrace();
 		}
 		*/
-		
-		for (int i = from; i < to; i++) 
+
+		for (int i = from; i < to; i++)
 		{
 			if (i == focusPosition)
 				continue;
 			Integer idx = vectors.getIndexOrNull(tokens.get(i));
 
-			if (idx == null) 
-			{	
+			if (idx == null)
+			{
 				continue;
 			}
 			float[] vect1 = allVec[idx];
-			
+
 			double relevanceWeight = 1;
 			//if (vLem != null) relevanceWeight = Distance.cosineSimilarity(vLem, vect1); // dit werkt dus totaal NIET...
-			
+
 			double rankWeight = Math.log(1+idx);
 			double distanceWeight = (1 / (double) T) * Math.max(0, T - Math.abs(i-focusPosition));
 			//System.err.println(tokenCount + ": " + i +  " f=" + wic.focusPosition + " dw=" + distanceWeight);
-			
-			
+
+
 			for (int j = 0; j < size; j++)
 				vec[j] += rankWeight * distanceWeight * relevanceWeight * vect1[j];
 		}
@@ -384,7 +384,7 @@ public class Util
 		Distance.checkNAN(vec);
 		return vec;
 	}
-	
+
 	public static float[] getRankWeightedAverageVector(Vectors vectors,
 			List<String> tokens)
 	{
@@ -395,12 +395,12 @@ public class Util
 		// int tokenCount = tokens.size();
 		float[][]allVec = vectors.getVectors();
 
-		for (String token: tokens) 
+		for (String token: tokens)
 		{
 			Integer idx = vectors.getIndexOrNull(token);
 
-			if (idx == null) 
-			{	
+			if (idx == null)
+			{
 				continue;
 			}
 
@@ -444,10 +444,10 @@ public class Util
 		test2();
 	}
 
-	public static void readToNewline(BufferedInputStream fis, StringBuilder sb) throws IOException 
+	public static void readToNewline(BufferedInputStream fis, StringBuilder sb) throws IOException
 	{
 		char ch = (char) fis.read();
-		while (ch != '\n') 
+		while (ch != '\n')
 		{
 			sb.append(ch);
 			ch = (char) fis.read();
@@ -455,14 +455,14 @@ public class Util
 	}
 
 	public static String readToWhiteSpace(BufferedInputStream fis, StringBuilder sb)
-			throws IOException, UnsupportedEncodingException 
+			throws IOException, UnsupportedEncodingException
 	{
-		char ch; 
+		char ch;
 		sb.setLength(0);
 		ch = (char) fis.read();
-		while (!Character.isWhitespace(ch) && ch >= 0 && ch <= 256) 
+		while (!Character.isWhitespace(ch) && ch >= 0 && ch <= 256)
 		{
-			sb.append((char) ch);
+			sb.append(ch);
 			ch = (char) fis.read();
 		}
 		//ch = (char) fis.read(); // dit slaat nergens op!
@@ -472,5 +472,5 @@ public class Util
 		return st;
 	}
 
-	
+
 }

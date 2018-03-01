@@ -32,7 +32,7 @@ public class Analogy
 			float[] D = guess(A,B,C);
 			
 			//String[] known = {a,b,c};
-			Set<String> knownSet = new HashSet<String>();
+			Set<String> knownSet = new HashSet<>();
 			knownSet.add(a); knownSet.add(b); knownSet.add(c);
 
 			List<ScoredTerm> close = Distance.getClosestTerms(vectors, 10, D);

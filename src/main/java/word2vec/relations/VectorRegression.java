@@ -1,27 +1,30 @@
 package word2vec.relations;
 
 
-import word2vec.*;
-import word2vec.Distance.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import la.decomposition.QRDecomposition;
+import la.decomposition.SingularValueDecomposition;
+import la.matrix.DenseMatrix;
+import la.matrix.Matrix;
+import la.vector.DenseVector;
 import ml.options.Options;
 import ml.regression.LASSO;
 import ml.regression.Regression;
-import la.decomposition.QRDecomposition;
-import la.decomposition.SingularValueDecomposition;
-import la.matrix.*;
-import la.vector.DenseVector;
 import ml.utils.Printer;
-
-import java.util.*;
+import word2vec.Distance;
+import word2vec.Distance.ScoredTerm;
+import word2vec.Util;
+import word2vec.Vectors;
 /**
- * 
+ *
  * Test of met lineare relatie tussen twee ruimtes goede woordparen kunnen vinden.
- * Wellicht beter te maken door per woord / groepje woorden 
+ * Wellicht beter te maken door per woord / groepje woorden
  * andere lineaire afbeelding te kiezen, meer bepaald door de woorden waarmee het te mappen woord een relatie heeft
- * 
+ *
  * <pre>
- * 
+ *
  * LASSO is a Java implementation of LASSO, which solves the following convex optimization problem:
 min_W 2\1 || Y - X * W ||_F^2 + lambda * || W ||_1
 where X is an n-by-p data matrix with each row bing a p dimensional data vector and Y is an n-by-ny dependent variable matrix.
@@ -39,43 +42,43 @@ public class VectorRegression
 
 	private static Regression getLasso()
 	{
-		Options options = new Options(); 
-		options.maxIter = 30; 
+		Options options = new Options();
+		options.maxIter = 30;
 		options.lambda = 0.01;  // regularization
-		options.verbose = !true; 
-		options.epsilon = 1e-5; 
+		options.verbose = !true;
+		options.epsilon = 1e-5;
 
-		Regression lasso = new LASSO(options); 
+		Regression lasso = new LASSO(options);
 		return lasso;
 	}
 
 	@SuppressWarnings("unused")
 	private static void test()
 	{
-		double[][] data = 
+		double[][] data =
 			{
-					{1, 2, 3, 2}, 
-					{4, 2, 3, 6}, 
+					{1, 2, 3, 2},
+					{4, 2, 3, 6},
 					{5, 1, 2, 1}
 			};
 
-		double[][] depVars = {{3, 2}, {2, 3}, {1, 4}}; 
+		double[][] depVars = {{3, 2}, {2, 3}, {1, 4}};
 
-		Options options = new Options(); 
-		options.maxIter = 600; 
-		options.lambda = 0.05; 
-		options.verbose = !true; 
-		options.epsilon = 1e-5; 
-		Regression LASSO = new LASSO(options); 
-		LASSO.feedData(data); 
+		Options options = new Options();
+		options.maxIter = 600;
+		options.lambda = 0.05;
+		options.verbose = !true;
+		options.epsilon = 1e-5;
+		Regression LASSO = new LASSO(options);
+		LASSO.feedData(data);
 		LASSO.feedDependentVariables(depVars);
-		LASSO.train(); 
-		System.out.printf("Projection matrix:\n"); 
-		Printer.display(LASSO.W); 
+		LASSO.train();
+		System.out.printf("Projection matrix:\n");
+		Printer.display(LASSO.W);
 		Matrix Yt =
-				LASSO.predict(data); 
-		// 
-		System.out.printf("Predicted dependent variables:\n"); 
+				LASSO.predict(data);
+		//
+		System.out.printf("Predicted dependent variables:\n");
 		Printer.display(Yt);
 	}
 
@@ -121,7 +124,7 @@ public class VectorRegression
 	}
 	public static String[] getCommonVocabulary(Vectors v1, Vectors v2)
 	{
-		List<String> common = new ArrayList<String>();
+		List<String> common = new ArrayList<>();
 		for (int i=0; i < v1.wordCount(); i++)
 		{
 			String w = v1.getTerm(i);
@@ -196,9 +199,9 @@ public class VectorRegression
 	public Matrix getLinearMappingBetweenSpaces(Vectors v1, Vectors v2)
 	{
 		//long s = System.currentTimeMillis();
-		List<String> words = new ArrayList<String>();
-		List<float[]> vectors1 = new ArrayList<float[]>();
-		List<float[]> vectors2 = new ArrayList<float[]>();
+		List<String> words = new ArrayList<>();
+		List<float[]> vectors1 = new ArrayList<>();
+		List<float[]> vectors2 = new ArrayList<>();
 		int k=0;
 		for (int i=0 ; i < v1.wordCount(); i++)
 		{
@@ -232,7 +235,7 @@ public class VectorRegression
 		return r;
 	}
 
-	public static float[] apply(Matrix mT, float[] x) 
+	public static float[] apply(Matrix mT, float[] x)
 	{
 		double[] V1 = VectorRegression.floatToDouble(x);
 		DenseVector img = (DenseVector) mT.operate(new DenseVector(V1));
@@ -250,7 +253,7 @@ public class VectorRegression
 		return new DenseMatrix(x);
 	}
 
-	
+
 	/**
 	 * ? arg min<sub>R</sub> || RA - B || <br>
 	 * Oplossing: <br>
@@ -260,7 +263,7 @@ public class VectorRegression
 	 * <br>
 	 * https://en.wikipedia.org/wiki/Orthogonal_Procrustes_problem
 	 */
-	
+
 	public static Matrix Procrustes(Matrix A, Matrix B)
 	{
 		Matrix X = B.mtimes(A.transpose());
@@ -270,14 +273,14 @@ public class VectorRegression
 		Matrix V = USV[2];
 		return U.mtimes(V.transpose());
 	}
-	
-	public static Matrix Procrustes(List<float[]> x, List<float[]> y) 
+
+	public static Matrix Procrustes(List<float[]> x, List<float[]> y)
 	{
 		Matrix A = new DenseMatrix(floatToDouble(x));
 		Matrix B = new DenseMatrix(floatToDouble(y));
 		return Procrustes(A,B);
 	}
-	
+
 	public static Matrix fitLinearMapping(List<float[]> x, List<float[]> y, int reduceTo)
 	{
 		int dim = x.get(0).length;
@@ -285,30 +288,30 @@ public class VectorRegression
 		Matrix m = fitLinearMapping(x,y);
 
 		Matrix A = new DenseMatrix(floatToDouble(x));
-		
+
 		Matrix[] QR = QRDecomposition.decompose(A);
 
-		
+
 		Matrix Q = QR[0];
-		
+
 		// System.err.println(Q.getColumnDimension() + " x " + Q.getRowDimension());
-		
+
 		Matrix P = Q.mtimes(Q.transpose());
-		
-	
+
+
 
 		Matrix Q2 = Identity(dim).minus(P); // waarom werkte de oude foute keuze beter???
-		
+
 		//Matrix Q1 = Q.getColumns(0,x.size()-1);
 
 		Matrix I_A = Identity(dim).getColumns(0, x.size()-1);
 
 		//Matrix Q1T = Q1.transpose();
-		
-		
-		Matrix MP = m.mtimes(P); 
-	
-	
+
+
+		Matrix MP = m.mtimes(P);
+
+
 
 		boolean reduce = false;
 		if (reduce)
@@ -332,8 +335,8 @@ public class VectorRegression
 			// Matrix r1 = U.mtimes(S.mtimes(V.transpose())).plus(I_A);
 			// // Matrix r = r1.mtimes(Q1T);
 		}
-		
-		return MP.plus(Q2); // waarom maakt dit niks uit 
+
+		return MP.plus(Q2); // waarom maakt dit niks uit
 		//return m;
 	}
 
@@ -344,7 +347,7 @@ public class VectorRegression
 	 * @param y
 	 * @return
 	 */
-	public static Matrix fitLinearMapping(List<float[]> x, List<float[]> y) 
+	public static Matrix fitLinearMapping(List<float[]> x, List<float[]> y)
 	{
 		double[][] X  = new double[x.size()][];
 		double[][] Y  = new double[x.size()][];
@@ -385,6 +388,6 @@ public class VectorRegression
 		VectorRegression l = new VectorRegression();
 		Vectors v1 = Vectors.readFromFile(args[0]);
 		Vectors v2 = Vectors.readFromFile(args[1]);
-		l.testMapping(v1, v2);               
+		l.testMapping(v1, v2);
 	}
 }

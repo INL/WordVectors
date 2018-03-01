@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Radialpoint SafeCare Inc. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,28 +16,29 @@
 package word2vec;
 
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import java.util.function.*;
-
-import java.io.*;
+import java.util.function.Predicate;
 
 /**
  * this is much faster in Mikolov's code. Difference?
  */
-public class Distance 
+public class Distance
 {
 
-	public static class ScoredTerm 
+	public static class ScoredTerm
 	{
 		private String term;
 		private float score;
 
-		public ScoredTerm(String term, float score) 
+		public ScoredTerm(String term, float score)
 		{
 			super();
 			this.term = term;
@@ -70,16 +71,16 @@ public class Distance
 
 		String[] bestWords = new String[wordsToReturn];
 
-		for (int c = 0; c < vectors.wordCount(); c++) 
-		{    
+		for (int c = 0; c < vectors.wordCount(); c++)
+		{
 			similarity = 0;
 			for (int i = 0; i < size; i++)
 				similarity += vec[i] * allVec[c][i];
 			for (int i = 0; i < wordsToReturn; i++)  // this is slowish
 			{
-				if (similarity > bestSimilarity[i]) 
+				if (similarity > bestSimilarity[i])
 				{
-					for (int d = wordsToReturn - 1; d > i; d--) 
+					for (int d = wordsToReturn - 1; d > i; d--)
 					{
 						bestSimilarity[d] = bestSimilarity[d - 1];
 						bestWords[d] = bestWords[d - 1];
@@ -90,7 +91,7 @@ public class Distance
 				}
 			}
 		}
-		List<ScoredTerm> result = new ArrayList<ScoredTerm>(wordsToReturn);
+		List<ScoredTerm> result = new ArrayList<>(wordsToReturn);
 		for (int i = 0; i < wordsToReturn; i++)
 			result.add(new ScoredTerm(bestWords[i], bestSimilarity[i]));
 		return result;
@@ -100,14 +101,14 @@ public class Distance
 	{
 		float[] reference;
 		float[][] allVec;
-		
+
 		public DistanceTo(float[] reference, float[][] allVec)
 		{
 			this.reference = reference;
 			this.allVec = allVec;
 		}
 		@Override
-		public double applyAsDouble(int value) 
+		public double applyAsDouble(int value)
 		{
 			double similarity = 0;
 			for (int i = 0; i < reference.length; i++)
@@ -117,7 +118,7 @@ public class Distance
 		}
 
 	}
-	
+
 	public static List<ScoredTerm> getClosestTerms(Vectors vectors, int wordsToReturn, float[] vec)
 	{
 		float[][]allVec = vectors.getVectors();
@@ -139,14 +140,14 @@ public class Distance
 		java.util.Arrays.parallelSetAll(similarities, dt); // ahem...
 
 
-		for (int c = 0; c < vectors.wordCount(); c++) 
-		{    
+		for (int c = 0; c < vectors.wordCount(); c++)
+		{
 			similarity = similarities[c];
 			for (int i = 0; i < wordsToReturn; i++)  // this is slowish
 			{
-				if (similarity > bestSimilarity[i]) 
+				if (similarity > bestSimilarity[i])
 				{
-					for (int d = wordsToReturn - 1; d > i; d--) 
+					for (int d = wordsToReturn - 1; d > i; d--)
 					{
 						bestSimilarity[d] = bestSimilarity[d - 1];
 						bestWords[d] = bestWords[d - 1];
@@ -157,7 +158,7 @@ public class Distance
 				}
 			}
 		}
-		List<ScoredTerm> result = new ArrayList<ScoredTerm>(wordsToReturn);
+		List<ScoredTerm> result = new ArrayList<>(wordsToReturn);
 		for (int i = 0; i < wordsToReturn; i++)
 			result.add(new ScoredTerm(bestWords[i], bestSimilarity[i]));
 		return result;
@@ -207,8 +208,8 @@ public class Distance
 	{
 		return measure(vectors, wordsToReturn, tokens, null);
 	}
-	
-	public static List<ScoredTerm> measure(Vectors vectors, int wordsToReturn, String[] tokens, Predicate<String> predicate) throws OutOfVocabularyException 
+
+	public static List<ScoredTerm> measure(Vectors vectors, int wordsToReturn, String[] tokens, Predicate<String> predicate) throws OutOfVocabularyException
 	{
 		float distance;
 		//float length;
@@ -220,7 +221,7 @@ public class Distance
 		float[][]allVec = vectors.getVectors();
 		//long startTime = System.currentTimeMillis();
 		// nl.openconvert.log.ConverterLog.defaultLog.println("1:" + startTime);
-		Set<Integer> wordIdx = new TreeSet<Integer>();
+		Set<Integer> wordIdx = new TreeSet<>();
 
 		int tokenCount = tokens.length;
 		// boolean outOfDict = false;
@@ -229,10 +230,10 @@ public class Distance
 		wordIdx.clear();
 
 		boolean foundAtLeastOneToken = false;
-		for (int i = 0; i < tokenCount; i++) 
+		for (int i = 0; i < tokenCount; i++)
 		{
 			Integer idx = vectors.getIndexOrNull(tokens[i]);
-			if (idx == null) 
+			if (idx == null)
 			{
 				outOfDictWord = tokens[i];
 				// outOfDict = true;
@@ -246,13 +247,13 @@ public class Distance
 			for (int j = 0; j < size; j++)
 				vec[j] += vect1[j];
 		}
-		
+
 		if (!foundAtLeastOneToken)
 			throw new OutOfVocabularyException(outOfDictWord);
 
 		Util.normalize(vec);
 
-		for (int i = 0; i < wordsToReturn; i++) 
+		for (int i = 0; i < wordsToReturn; i++)
 		{
 			bestDistance[i] = Float.MIN_VALUE;
 			bestWords[i] = "";
@@ -264,19 +265,19 @@ public class Distance
 		//String[] bestWords = new String[wordsToReturn];
 		boolean runInParallel = true;
 		double[] similarities = null;
-		
+
 		if (runInParallel)
 		{
 		  similarities = new double[vectors.wordCount()];
 		  DistanceTo dt = new DistanceTo(vec, allVec);
 		  java.util.Arrays.parallelSetAll(similarities, dt); // ahem...
 		}
-		for (int c = 0; c < wc; c++) 
+		for (int c = 0; c < wc; c++)
 		{
 			if (wordIdx.contains(c)) continue;
 			if (predicate != null && !predicate.test(vectors.getTerm(c)))
 				continue;
-			
+
 			distance = runInParallel?(float) similarities[c]:0;
 
 			if (!runInParallel)
@@ -288,16 +289,16 @@ public class Distance
 					distance += vec[i] * vc[i];
 				}
 			}
-			for (int i = 0; i < wordsToReturn; i++) 
+			for (int i = 0; i < wordsToReturn; i++)
 			{
-				if (distance > bestDistance[i])  
+				if (distance > bestDistance[i])
 				{
 					for (d = wordsToReturn - 1; d > i; d--) // schuif op (dit zou sneller moeten kunnen meet een priority queue)
 					{
 						bestDistance[d] = bestDistance[d - 1];
 						bestWords[d] = bestWords[d - 1];
 					}
-					bestDistance[i] = (float) distance;
+					bestDistance[i] = distance;
 					bestWords[i] = vectors.getTerm(c);
 					break;
 				}
@@ -305,19 +306,19 @@ public class Distance
 		}
 		//nl.openconvert.log.ConverterLog.defaultLog.println("best:" + bestDistance[0]);
 		//nl.openconvert.log.ConverterLog.defaultLog.println("3:" +  ( System.currentTimeMillis() - startTime));
-		List<ScoredTerm> result = new ArrayList<ScoredTerm>(wordsToReturn);
+		List<ScoredTerm> result = new ArrayList<>(wordsToReturn);
 		for (int i = 0; i < wordsToReturn; i++)
 			result.add(new ScoredTerm(bestWords[i], bestDistance[i]));
 		return result;
 	}
 
 
-	public static double cosineSimilarity(float[] a, float[] b) 
+	public static double cosineSimilarity(float[] a, float[] b)
 	{
 		double dotProduct = 0.0;
 		double aMagnitude = 0.0;
 		double bMagnitude = 0.0;
-		for (int i = 0; i < b.length ; i++) 
+		for (int i = 0; i < b.length ; i++)
 		{
 			double aValue = a[i];
 			double bValue = b[i];
@@ -336,7 +337,7 @@ public class Distance
 		double cos = cosineSimilarity(a,b);
 		return Math.acos(cos);
 	}
-	
+
 	public static void main(String[] args)
 	{
 		Vectors v = Vectors.readFromFile(args[0]);
@@ -380,9 +381,9 @@ public class Distance
 		}
 	}
 
-	public static float[] subtract(float[] v1, float[] v2) 
+	public static float[] subtract(float[] v1, float[] v2)
 	{
-	
+
 		if (v1 == null)
 			return v2;
 		if (v2== null)
@@ -394,10 +395,10 @@ public class Distance
 			r[i] = v1[i]- v2[i];
 		return r;
 	}
-	
-	public static float[] add(float[] v1, float[] v2) 
+
+	public static float[] add(float[] v1, float[] v2)
 	{
-	
+
 		if (v1 == null)
 			return v2;
 		if (v2== null)
@@ -409,8 +410,8 @@ public class Distance
 			r[i] = v1[i]+ v2[i];
 		return r;
 	}
-	
-	public static float[] mult(float[] v1, float[] v2) 
+
+	public static float[] mult(float[] v1, float[] v2)
 	{
 
 		if (v1 == null)

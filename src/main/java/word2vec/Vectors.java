@@ -15,18 +15,10 @@
  */
 package word2vec;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.zip.GZIPInputStream;
 
 
 //import nl.openconvert.log.ConverterLog;
@@ -191,6 +183,44 @@ public class Vectors implements java.io.Serializable
 		return vectors.length;
 	}
 
+
+	/**
+	 * @param vectorFileName
+	 * @return
+	 */
+
+	public static Vectors readFromTextFile(String vectorFileName) {
+		float[][] vectors;
+		String[] vocabulary;
+		int words;
+		int size;
+		try {
+			InputStream i1 = vectorFileName.endsWith(".gz")? new GZIPInputStream(new FileInputStream(vectorFileName)) : new FileInputStream(vectorFileName);
+			BufferedReader r = new BufferedReader(new InputStreamReader(i1));
+			String line = r.readLine();
+			String[] x = line.split("\\s+");
+			words = Integer.parseInt(x[0]);
+			size = Integer.parseInt(x[1]);
+			vectors = new float[words][];
+			vocabulary = new String[words];
+
+			int k = 0;
+			while ((line = r.readLine()) != null)
+			{
+				float[] vector = new float[size];
+				String[] words_and_numbers  = line.split("\\s+");
+				String word = words_and_numbers[0];
+				for (int i=1; i <= size; i++)
+					vector[i-1] = Float.parseFloat(words_and_numbers[i]);
+				Util.normalize(vector);
+				vectors[k]  = vector;
+				vocabulary[k] = word;
+				k++;
+			}
+			Vectors instance = new Vectors(vectors, vocabulary);
+			return instance;
+		} catch (Exception e){ e.printStackTrace(); return null;}
+	}
 	/**
 	 * @param vectorFileName
 	 * @return
@@ -198,7 +228,7 @@ public class Vectors implements java.io.Serializable
 	public static Vectors readFromFile(String vectorFileName)
 	{
 		float[][] vectors;
-		String[] vocabVects;
+		String[] vocabulary;
 		int words;
 		int size;
 
@@ -222,7 +252,7 @@ public class Vectors implements java.io.Serializable
 			size = (int) Long.parseLong(parts[1]);
 
 			vectors = new float[words][];
-			vocabVects = new String[words];
+			vocabulary = new String[words];
 
 			//nl.openconvert.log.ConverterLog.setDefaultVerbosity(true);
 			//nl.openconvert.log.ConverterLog.defaultLog.println("Read " + words + " words with size " + size + " per vector from "  + vectorFileName);
@@ -236,7 +266,7 @@ public class Vectors implements java.io.Serializable
 				//}
 
 				String st = Util.readToWhiteSpace(inputStream, sb);
-				vocabVects[w] = st;
+				vocabulary[w] = st;
 
 				//System.err.println("<" + st + ">");
 
@@ -246,7 +276,7 @@ public class Vectors implements java.io.Serializable
 				char ch = (char) inputStream.read(); // newline
 			}
 			inputStream.close();
-			Vectors instance = new Vectors(vectors, vocabVects);
+			Vectors instance = new Vectors(vectors, vocabulary);
 			return instance;
 		}  catch (Exception e)
 		{

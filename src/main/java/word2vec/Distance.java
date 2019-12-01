@@ -340,7 +340,9 @@ public class Distance
 
 	public static void main(String[] args)
 	{
-		Vectors v = Vectors.readFromFile(args[0]);
+		String  vectorFileName= args[0];
+		System.err.println("Reader from " + vectorFileName);
+		Vectors v = vectorFileName.endsWith(".bin")?Vectors.readFromFile(vectorFileName):Vectors.readFromTextFile(vectorFileName);
 		System.err.println("enter word...");
 		int nof = Integer.parseInt(args[1]);
 		String line;

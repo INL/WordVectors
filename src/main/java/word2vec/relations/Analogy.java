@@ -66,7 +66,8 @@ public class Analogy
 	public static void main(String[] args)
 	{
 		Analogy a = new Analogy();
-		a.vectors = Vectors.readFromFile(args[0]);
+		String vectorFileName = args[0];
+		a.vectors = vectorFileName.endsWith(".bin")?Vectors.readFromFile(vectorFileName):Vectors.readFromTextFile(vectorFileName);
 		System.err.println("enter words...");
 		//int nof = Integer.parseInt(args[1]);
 		String line;

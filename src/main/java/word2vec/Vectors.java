@@ -239,7 +239,7 @@ public class Vectors implements java.io.Serializable
 		}
 
 		try (
-			InputStream i1 = new FileInputStream(vectorFileName);
+			InputStream i1 = vectorFileName.endsWith(".gz")? new GZIPInputStream(new FileInputStream(vectorFileName)) : new FileInputStream(vectorFileName);
 			BufferedInputStream inputStream = new BufferedInputStream(i1);
 		) {
 			StringBuilder sb = new StringBuilder();

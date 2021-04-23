@@ -178,9 +178,8 @@ public class Distance
 	public static void printAverageVectorsForLabeledSentences(Vectors vectors, String filename)
 	{
 		String line;
-		try
+		try (BufferedReader in = new BufferedReader(new FileReader(filename)))
 		{
-			BufferedReader in = new BufferedReader(new FileReader(filename));
 			while ((line = in.readLine()) != null)
 			{
 				String[] tokens = line.split("\t");
@@ -196,7 +195,6 @@ public class Distance
 				}
 				System.out.println();
 			}
-			in.close();
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

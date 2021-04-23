@@ -15,7 +15,17 @@
  */
 package word2vec;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -110,16 +120,16 @@ public class Vectors implements java.io.Serializable
 	 *             if there are problems writing to the stream
 	 */
 	public void writeTo(OutputStream os) throws IOException {
-		DataOutputStream dos = new DataOutputStream(os);
-		dos.writeInt(this.vectors.length);
-		dos.writeInt(this.size);
+		try (DataOutputStream dos = new DataOutputStream(os)) {
+    		dos.writeInt(this.vectors.length);
+    		dos.writeInt(this.size);
 
-		for (int i = 0; i < vectors.length; i++) {
-			dos.writeUTF(this.vocabVects[i]);
-			for (int j = 0; j < size; j++)
-				dos.writeFloat(this.vectors[i][j]);
+    		for (int i = 0; i < vectors.length; i++) {
+    			dos.writeUTF(this.vocabVects[i]);
+    			for (int j = 0; j < size; j++)
+    				dos.writeFloat(this.vectors[i][j]);
+    		}
 		}
-		dos.close();
 	}
 
 	public void printAsText(PrintWriter out)
@@ -273,7 +283,7 @@ public class Vectors implements java.io.Serializable
 				float[] m = Util.readFloats(size, inputStream, true);
 				Util.normalize(m);
 				vectors[w] = m;
-				char ch = (char) inputStream.read(); // newline
+				inputStream.read(); // newline
 			}
 			inputStream.close();
 			Vectors instance = new Vectors(vectors, vocabulary);

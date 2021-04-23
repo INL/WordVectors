@@ -99,9 +99,9 @@ public class Util
 		for (int i=0; i < 20; i++)
 			f[i] = i;
 		normalize(f);
-		FileOutputStream fos = new FileOutputStream("/tmp/aap");
-		writeFloats(fos, f);
-		fos.close();
+		try (FileOutputStream fos = new FileOutputStream("/tmp/aap")) {
+		    writeFloats(fos, f);
+		}
 
 		BufferedInputStream bis = new BufferedInputStream(new FileInputStream("/tmp/aap"));
 		float[] f1 = readFloats(20, bis, true);
@@ -422,21 +422,21 @@ public class Util
 	public static void writeAsWord2VecFile(int dimension, Map<String, float[]> senseMap, String fileName) throws IOException
 	{
 		int words = senseMap.size();
-		FileOutputStream fw = new FileOutputStream(fileName);
-		fw.write((words + " " + dimension + "\n").getBytes());
-		for (String s: senseMap.keySet())
-		{
-			fw.write(s.getBytes());
-			fw.write(' ');
-			//fw.write(16);
-			fw.flush();
-			float[] v = senseMap.get(s);
-			// System.err.println(Arrays.asList(v));
-			writeFloats(fw, v);
-			fw.flush();
-			fw.write("\n".getBytes());
+		try (FileOutputStream fw = new FileOutputStream(fileName)) {
+    		fw.write((words + " " + dimension + "\n").getBytes());
+    		for (String s: senseMap.keySet())
+    		{
+    			fw.write(s.getBytes());
+    			fw.write(' ');
+    			//fw.write(16);
+    			fw.flush();
+    			float[] v = senseMap.get(s);
+    			// System.err.println(Arrays.asList(v));
+    			writeFloats(fw, v);
+    			fw.flush();
+    			fw.write("\n".getBytes());
+    		}
 		}
-		fw.close();
 	}
 
 	public static void main(String[] args) throws Exception
